@@ -4,7 +4,7 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
 
-    private JTextArea textArea1;
+    private JTextArea klartext;
     private JButton button1;
     private JTextField pfeld;
     private JTextField qfeld;
@@ -17,13 +17,13 @@ public class Menu extends JFrame {
     private JButton inKlarButton;
     private JTextField öSfeld;
     private JTextField gSFeld;
-    private JTextArea textArea2;
+    private JTextArea asciitext;
     private JButton kodierenButton;
     private JButton dekodierenButton;
-    private JTextArea textArea3;
+    private JTextArea codetext;
     private JTextField efeld;
 
-    int p;
+    int p = ;
     int q;
     int n;
     int phi;
@@ -72,6 +72,31 @@ public class Menu extends JFrame {
                 dfeld.setText(d + "");
                 öSfeld.setText(e + ", " + n);
                 gSFeld.setText(d + "");
+            }
+        });
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                char character = 'a';
+                int ascii = (int) character;
+                char[] chars = klartext.getText().toCharArray();
+                for (int i = 0; i < chars.length; i++)
+                    asciitext.setText(asciitext.getText() + (int) chars[i]);
+            }
+        });
+        kodierenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                codetext.setText(String.format("%.0f", Math.pow(Integer.parseInt(asciitext.getText()), e) % n));
+            }
+        });
+        dekodierenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                asciitext.setText(String.format("%.0f", Math.pow(Integer.parseInt(codetext.getText()), d) % n));
+                System.out.println(d);
+                System.out.println(n);
+                System.out.println(Math.pow(Integer.parseInt(codetext.getText()), d));
             }
         });
     }
