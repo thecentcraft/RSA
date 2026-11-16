@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigInteger;
 
 public class Menu extends JFrame {
 
@@ -15,7 +16,7 @@ public class Menu extends JFrame {
     private JButton umrechnenButton;
     private JTextField dfeld;
     private JButton inKlarButton;
-    private JTextField öSfeld;
+    private JTextField pKfeld;
     private JTextField gSFeld;
     private JTextArea asciitext;
     private JButton kodierenButton;
@@ -23,7 +24,7 @@ public class Menu extends JFrame {
     private JTextArea codetext;
     private JTextField efeld;
 
-    int p = ;
+    int p;
     int q;
     int n;
     int phi;
@@ -61,43 +62,31 @@ public class Menu extends JFrame {
                 return ggt(b,a % b);
             }
         });
-        umrechnenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                e = Integer.parseInt(efeld.getText());
-                d = 0;
-                while ((e * d % phi) != 1) {
-                    d++;
-                }
-                dfeld.setText(d + "");
-                öSfeld.setText(e + ", " + n);
-                gSFeld.setText(d + "");
+        umrechnenButton.addActionListener(event -> {
+            e = Integer.parseInt(efeld.getText());
+            d = 0;
+            while ((e * d % phi) != 1) {
+                d++;
             }
+            dfeld.setText(d + "");
+            pKfeld.setText(e + ", " + n);
+            gSFeld.setText(d + "");
         });
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                char character = 'a';
-                int ascii = (int) character;
-                char[] chars = klartext.getText().toCharArray();
-                for (int i = 0; i < chars.length; i++)
-                    asciitext.setText(asciitext.getText() + (int) chars[i]);
-            }
+        button1.addActionListener(event -> {
+            char[] chars = klartext.getText().toCharArray();
+            for (char aChar : chars) asciitext.setText(asciitext.getText() + (int) aChar);
         });
-        kodierenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                codetext.setText(String.format("%.0f", Math.pow(Integer.parseInt(asciitext.getText()), e) % n));
-            }
+        kodierenButton.addActionListener(event -> codetext.setText(String.format("%.0f", Math.pow(Integer.parseInt(asciitext.getText()), e) % n)));
+        dekodierenButton.addActionListener(event -> {
+            BigInteger code = new BigInteger(codetext.getText());
+            BigInteger exponent = BigInteger.valueOf(d);
+            BigInteger modulo = BigInteger.valueOf(n);
+            BigInteger sum = code.modPow(exponent, modulo);
+            asciitext.setText(sum + "");
         });
-        dekodierenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                asciitext.setText(String.format("%.0f", Math.pow(Integer.parseInt(codetext.getText()), d) % n));
-                System.out.println(d);
-                System.out.println(n);
-                System.out.println(Math.pow(Integer.parseInt(codetext.getText()), d));
-            }
+        inKlarButton.addActionListener(e -> {
+            int ascii = Integer.parseInt(asciitext.getText());
+            klartext.setText(String.valueOf((char) ascii));
         });
     }
 }
