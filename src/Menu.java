@@ -6,18 +6,18 @@ import java.math.BigInteger;
 public class Menu extends JFrame {
 
     private JTextArea klartext;
-    private JButton button1;
+    private JButton asciiButton;
     private JTextField pfeld;
     private JTextField qfeld;
     private JPanel panel;
-    private JButton button2;
+    private JButton convertButton;
     private JTextField nfeld;
     private JTextField phifeld;
     private JButton umrechnenButton;
     private JTextField dfeld;
     private JButton inKlarButton;
-    private JTextField pKfeld;
-    private JTextField gSFeld;
+    private JTextField puKfeld;
+    private JTextField prKFeld;
     private JTextArea asciitext;
     private JButton kodierenButton;
     private JButton dekodierenButton;
@@ -37,7 +37,7 @@ public class Menu extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("RSA-Kryptosystem");
 
-        button2.addActionListener(new ActionListener() {
+        convertButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
                 p = Integer.parseInt(pfeld.getText());
@@ -69,24 +69,51 @@ public class Menu extends JFrame {
                 d++;
             }
             dfeld.setText(d + "");
-            pKfeld.setText(e + ", " + n);
-            gSFeld.setText(d + "");
+            puKfeld.setText(e + ", " + n);
+            prKFeld.setText(d + "");
         });
-        button1.addActionListener(event -> {
-            char[] chars = klartext.getText().toCharArray();
-            for (char aChar : chars) asciitext.setText(asciitext.getText() + (int) aChar);
-        });
-        kodierenButton.addActionListener(event -> codetext.setText(String.format("%.0f", Math.pow(Integer.parseInt(asciitext.getText()), e) % n)));
-        dekodierenButton.addActionListener(event -> {
-            BigInteger code = new BigInteger(codetext.getText());
-            BigInteger exponent = BigInteger.valueOf(d);
-            BigInteger modulo = BigInteger.valueOf(n);
-            BigInteger sum = code.modPow(exponent, modulo);
-            asciitext.setText(sum + "");
-        });
-        inKlarButton.addActionListener(e -> {
-            int ascii = Integer.parseInt(asciitext.getText());
-            klartext.setText(String.valueOf((char) ascii));
-        });
+            asciiButton.addActionListener(event -> {
+                char[] chars = klartext.getText().toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (char aChar : chars) {
+                    sb.append((int) aChar).append(" ");
+                }
+                asciitext.setText(sb.toString().trim());
+            });
+            kodierenButton.addActionListener(event -> {
+                String[] werte = asciitext.getText().split(" ");
+                StringBuilder sb = new StringBuilder();
+                for (String wert: werte) {
+                    BigInteger ascii = new BigInteger(wert);
+                    BigInteger exponent = BigInteger.valueOf(e);
+                    BigInteger modulo = BigInteger.valueOf(n);
+                    BigInteger encoded = ascii.modPow(exponent, modulo);
+                    sb.append(encoded).append(" ");
+                }
+                codetext.setText(sb.toString().trim());
+            });
+            dekodierenButton.addActionListener(event -> {
+                String[] werte = codetext.getText().split(" ");
+                StringBuilder sb = new StringBuilder();
+                for (String wert: werte) {
+                    BigInteger code = new BigInteger(wert);
+                    BigInteger exponent = BigInteger.valueOf(d);
+                    BigInteger modulo = BigInteger.valueOf(n);
+                    BigInteger sum = code.modPow(exponent, modulo);
+                    sb.append(sum).append(" ");
+                }
+                asciitext.setText(sb.toString().trim());
+            });
+            inKlarButton.addActionListener(e -> {
+                String[] werte = asciitext.getText().split(" ");
+                StringBuilder sb = new StringBuilder();
+
+                for (String wert: werte) {
+                    int ascii = Integer.parseInt(wert);
+                    sb.append((char) ascii);
+                }
+                klartext.setText(sb.toString().trim());
+            });
     }
 }
