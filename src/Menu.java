@@ -23,6 +23,9 @@ public class Menu extends JFrame {
     private JButton dekodierenButton;
     private JTextArea codetext;
     private JTextField efeld;
+    private JButton clearTextbutton;
+    private JButton presetbutton;
+    private JButton clearAllButton;
 
     int p;
     int q;
@@ -69,8 +72,8 @@ public class Menu extends JFrame {
                 d++;
             }
             dfeld.setText(d + "");
-            puKfeld.setText(e + ", " + n);
-            prKFeld.setText(d + "");
+            puKfeld.setText(e + "," + n);
+            prKFeld.setText(d + "," + n);
         });
             asciiButton.addActionListener(event -> {
                 char[] chars = klartext.getText().toCharArray();
@@ -82,24 +85,36 @@ public class Menu extends JFrame {
                 asciitext.setText(sb.toString().trim());
             });
             kodierenButton.addActionListener(event -> {
-                String[] werte = asciitext.getText().split(" ");
+                String[] werte = asciitext.getText().trim().split("\\s+");
                 StringBuilder sb = new StringBuilder();
+                e = Integer.parseInt(puKfeld.getText().split(",")[0].trim());
+                n = Integer.parseInt(puKfeld.getText().split(",")[1].trim());
+                if (n <= 0) {
+                    JOptionPane.showMessageDialog(null, "Der Modulo muss positiv sein!");
+                    return;
+                }
+                BigInteger exponent = BigInteger.valueOf(e);
+                BigInteger modulo = BigInteger.valueOf(n);
                 for (String wert: werte) {
                     BigInteger ascii = new BigInteger(wert);
-                    BigInteger exponent = BigInteger.valueOf(e);
-                    BigInteger modulo = BigInteger.valueOf(n);
                     BigInteger encoded = ascii.modPow(exponent, modulo);
                     sb.append(encoded).append(" ");
                 }
                 codetext.setText(sb.toString().trim());
             });
             dekodierenButton.addActionListener(event -> {
-                String[] werte = codetext.getText().split(" ");
+                String[] werte = codetext.getText().trim().split("\\s+");
                 StringBuilder sb = new StringBuilder();
+                d = Integer.parseInt(prKFeld.getText().split(",")[0].trim());
+                n = Integer.parseInt(prKFeld.getText().split(",")[1].trim());
+                if (n <= 0) {
+                    JOptionPane.showMessageDialog(null, "Der Modulo muss positiv sein!");
+                    return;
+                }
+                BigInteger exponent = BigInteger.valueOf(d);
+                BigInteger modulo = BigInteger.valueOf(n);
                 for (String wert: werte) {
                     BigInteger code = new BigInteger(wert);
-                    BigInteger exponent = BigInteger.valueOf(d);
-                    BigInteger modulo = BigInteger.valueOf(n);
                     BigInteger sum = code.modPow(exponent, modulo);
                     sb.append(sum).append(" ");
                 }
@@ -115,5 +130,47 @@ public class Menu extends JFrame {
                 }
                 klartext.setText(sb.toString().trim());
             });
+        clearTextbutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                klartext.setText("");
+                asciitext.setText("");
+            }
+        });
+        clearAllButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                klartext.setText("");
+                asciitext.setText("");
+                codetext.setText("");
+                pfeld.setText("");
+                qfeld.setText("");
+                efeld.setText("");
+                nfeld.setText("");
+                phifeld.setText("");
+                puKfeld.setText("");
+                prKFeld.setText("");
+                dfeld.setText("");
+            }
+        });
+        presetbutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                pfeld.setText("17");
+                p = 17;
+                qfeld.setText("19");
+                q = 19;
+                nfeld.setText("323");
+                n = 323;
+                phifeld.setText("288");
+                phi = 288;
+                efeld.setText("5");
+                e = 5;
+                dfeld.setText("173");
+                d = 173;
+                puKfeld.setText("5, 323");
+                prKFeld.setText("173, 323");
+            }
+        });
     }
 }
